@@ -1,0 +1,96 @@
+from sklearn.datasets import make_classification
+
+X, Y = make_classification(n_samples=200, n_classes=2, n_features=10, n_reduntant = 0, random_state =1)
+
+X.shape, Y.shape
+
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size = 0.2)
+
+import pandas as pd
+pd.DataFrame(X)
+
+X = pd.DataFrame(X)
+Y = pd.DataFrame(Y)
+
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
+
+X_train.shape, Y_trian.shape
+
+X_test.shape, Y_test.shape
+
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+
+rf = RandomForestClassifier(max_features=5, n_estimators=100)
+
+rf.fit(X_train, Y_train)
+rf.score(X_test, Y_test)
+Y_pred = rf.predict(X_test)
+accuracy_score(Y_pred, Y_test)
+
+Y_pred, Y_test
+
+# Hyperparameter tuning
+
+from sklearn.model_selection import GridSearchCV
+import numpy as np
+
+max_features_range = np.arange(1,6,1)
+n_estimators_range = np.arange(10, 210, 10)
+param_grid = dict(max_features_range, n_estimators =n_estimators_range)
+
+rf = RandomForestClassifier()
+
+grid = GridSearchCV(estimator=rf, param_grid=param_grid, cv = 5)
+
+import numpy as np
+
+np.arange(1,6,1)
+
+grid.fit(X_train, Y_train)
+
+print('The best parameters are %s with a score of %0.2f'
+     % (grid.best_params_, grid.best_score_))
+    
+import pandas as pd 
+
+grid_results = pd.concat(pd.DataFrame(grid.cv_results_['params'], pd.DataFrame(grid.cv_results_['mean_test_score'])))
+grid_results
+
+grid_contour = grid_results.groupby(['max_features', 'n_estimators']).mean()
+grid_contour
+
+grid_reset = grid_contour.reset_index()
+grid_reset.columns = ['max_features','n_estimators', 'Accuracy']
+grind_pivot = grid_reset.pivot('max_features','n_estimators')
+grid_pivot
+
+x = grid_pivot.columns.levels[1].values
+y = grid_pivot.index.values
+z = grid_pivot.values
+
+# 2d contour plot
+import plotly.graph_objects as go
+
+# X and Y axes labels
+layout  = go.Layout(
+         xaxis=go.layout.xaxis.Title(
+         title=go.layout.xaxis.Title(
+         text='max_feature')
+         ),
+        yaxis = go.layout.YAxis(
+        title=go.layout.yaxis.Title(
+        text = 'n_estimators')))
+
+fig = go.Figure(DATA = [go.Contour(z=z, x=x, y=y), layout=layout])
+
+fig.update_layout(title='Hyperparameter tuning', autosize=False, 
+                 width=500, height=500, 
+                 margin=dic(l=65, r = 50, b = 65, t = 90))
+fig.show()
+
+
